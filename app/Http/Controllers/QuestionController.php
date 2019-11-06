@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\QuestionResource;
 use App\Model\Question;
 use Illuminate\Http\Request;
+use Nexmo\Client\Response\Response;
 
 class QuestionController extends Controller
 {
@@ -14,18 +16,9 @@ class QuestionController extends Controller
      */
     public function index()
     {
-        //
+        return QuestionResource::collection(Question::latest()->get());
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
 
     /**
      * Store a newly created resource in storage.
@@ -35,7 +28,14 @@ class QuestionController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        Question::create($request->all());
+        return response("Created", 200);
+        //$question = new Question;
+
+        //$question->title = $request->title;
+        //$question->body = $request->body;
+        //...
+        //$question->save();
     }
 
     /**
@@ -46,7 +46,7 @@ class QuestionController extends Controller
      */
     public function show(Question $question)
     {
-        //
+        return new QuestionResource($question);
     }
 
     /**
@@ -80,6 +80,7 @@ class QuestionController extends Controller
      */
     public function destroy(Question $question)
     {
-        //
+        $question->delete();
+        return response("Deleted", 200);
     }
 }
